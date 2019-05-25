@@ -1,7 +1,12 @@
 FROM python:3.6-alpine
 
-ADD requirements.txt
+
+
+RUN mkdir ingester
+WORKDIR ingester/
+COPY requirements.txt .
+COPY Launcher.py .
 
 RUN pip install -r requirements.txt
 
-CMD pip freeze
+CMD ["gunicorn", "--bind=0.0.0.0", "Launcher:api"]
