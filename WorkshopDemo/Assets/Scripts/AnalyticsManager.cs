@@ -64,6 +64,7 @@ public class AnalyticsManager : MonoBehaviour
         if (isCDNAvailable)
         {
             string request = (string)keyValues["Request"];
+            keyValues.Remove("Request");
             string pid = "Unknown";
             if (PlayerPrefs.HasKey("PlayerID"))
             {
@@ -82,8 +83,6 @@ public class AnalyticsManager : MonoBehaviour
                 isCDNAvailable = false;
                 yield break;
             }
-            string result = www.downloadHandler.text;
-            Debug.Log(result);
         }
         else
         {
