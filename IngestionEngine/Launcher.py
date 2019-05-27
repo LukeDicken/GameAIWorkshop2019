@@ -20,7 +20,7 @@ class Status:
         data['EventCount'] = (int)((df.iloc[0][0]).astype(np.int32))
         resp.body = json.dumps(data)
 
-class CustomEvent:
+class CounterEvent:
     def __init__(self, db):
         self.db = db
 
@@ -66,7 +66,7 @@ def sql_setup():
     sql = sqlite3.Connection(database='data/Datastore.sql')
     try:
         playerSetup = "CREATE TABLE players (installTime timestamp, playerID varchar(50))"
-        sessionSetup = "CREATE TABLE sessions (sessionTime timestamp, playerID varchar(50))"
+        sessionSetup = "CREATE TABLE sessions (statTime timestamp, sessionStartTime timestamp, playerID varchar(50))"
         counterSetup = "CREATE TABLE counters (statTime timestamp, playerID varchar(50), counterName varchar(50), parameterBlob varchar(250))"
         sql.execute(playerSetup)
         sql.execute(sessionSetup)
@@ -79,3 +79,5 @@ sql = sql_setup()
 api = application = falcon.API()
 api.add_route('/status', Status(sql))
 api.add_route('/newPlayer', PlayerRegisterEvent(sql))
+api.add_route('/sessionStart', SessionStart(sql))
+api.add_route('/counter', CounterEvent(sql))
