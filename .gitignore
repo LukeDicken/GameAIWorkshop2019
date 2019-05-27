@@ -40,3 +40,4 @@ sysinfo.txt
 .idea/*
 
 *.pyc
+IngestionEngine/data/hello.sql
