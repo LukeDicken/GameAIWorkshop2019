@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using MiniJSON;
+using System;
 
 public class AnalyticsManager : MonoBehaviour
 {
@@ -33,30 +34,32 @@ public class AnalyticsManager : MonoBehaviour
     public static void logSessionStart()
     {
         // when a new session is started, fire a new session event
-        string req = am.connectionString + "/status";
-        Dictionary<string, object> pairs = new Dictionary<string, object>();
+        string req = am.connectionString + "/sessionStart";
+        Dictionary<string, string> pairs = new Dictionary<string, string>();
         pairs.Add("Request", req);
-        //am.StartCoroutine("_logEvent", pairs);
+        DateTime localDate = DateTime.UtcNow; // note - UTC to standard
+        pairs.Add("startTime", localDate.ToString());
+        am.StartCoroutine("_logEvent", pairs);
     }
 
-    public static void logCustomEvent(Dictionary<string, object> data)
+    public static void logCustomEvent(Dictionary<string, string> data)
     {
         // fire a generic event
-        string req = am.connectionString + "/status";
+        string req = am.connectionString + "/counter";
         data.Add("Request", req);
-        //am.StartCoroutine("_logEvent", data);
+        am.StartCoroutine("_logEvent", data);
     }
 
     public static void logNewPlayer()
     {
         Debug.Log("Registering new player");
         string req = am.connectionString + "/newPlayer";
-        Dictionary<string, object> data = new Dictionary<string, object>();
+        Dictionary<string, string> data = new Dictionary<string, string>();
         data.Add("Request", req);
         am.StartCoroutine("_logEvent", data);
     }
 
-    IEnumerator _logEvent(Dictionary<string, object> keyValues)
+    IEnumerator _logEvent(Dictionary<string, string> keyValues)
     {
         if (isCDNAvailable)
         {
