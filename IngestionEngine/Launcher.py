@@ -26,7 +26,15 @@ class CounterEvent:
 
     # how do we represent a custom event?
     def on_post(self, req, resp):
-        pass
+        playerID = req.media.pop('PlayerID')
+        now = dt.datetime.now()
+        counterName = req.media.pop('counterName')
+        primaryParameter = req.media.pop('primaryParameter')
+        data = json.dumps(req.media)
+        insertStatement = "INSERT INTO counters (statTime, playerID, counterName, primaryParameter, parameterBlob) VALUES ('" + str(now) + "', '" + str(playerID) + "', '" + str(counterName) + "', '" + str(primaryParameter) + "', '" + str(data) + "')"
+        self.db.execute(insertStatement)
+        data = {"status":"ok"}
+        resp.body = json.dumps(data)
 
 class SessionStart:
 
@@ -34,7 +42,14 @@ class SessionStart:
         self.db = db
 
     def on_post(self, req, resp):
-        pass
+        playerID = req.media['PlayerID']
+        now = dt.datetime.now()
+        startTime = req.media['startTime']
+        insertStatement = "INSERT INTO sessions (statTime, sessionStartTime, playerID) VALUES ('" + str(now) + "', '" + str(startTime) + "', '" + str(playerID) + "')"
+        print(insertStatement)
+        self.db.execute(insertStatement)
+        data = {"status": "ok"}
+        resp.body = json.dumps(data)
 
     # Determine the taxonomy for a session event
     pass
@@ -67,11 +82,12 @@ def sql_setup():
     try:
         playerSetup = "CREATE TABLE players (installTime timestamp, playerID varchar(50))"
         sessionSetup = "CREATE TABLE sessions (statTime timestamp, sessionStartTime timestamp, playerID varchar(50))"
-        counterSetup = "CREATE TABLE counters (statTime timestamp, playerID varchar(50), counterName varchar(50), parameterBlob varchar(250))"
+        counterSetup = "CREATE TABLE counters (statTime timestamp, playerID varchar(50), counterName varchar(50), primaryParameter varchar(50), parameterBlob varchar(250))"
         sql.execute(playerSetup)
         sql.execute(sessionSetup)
         sql.execute(counterSetup)
-    except sqlite3.OperationalError:
+    except sqlite3.OperationalError as error:
+        print(error)
         print("Tables are (probably) already created")
     return sql
 
