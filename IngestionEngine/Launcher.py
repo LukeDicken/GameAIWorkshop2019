@@ -33,6 +33,7 @@ class CounterEvent:
         data = json.dumps(req.media)
         insertStatement = "INSERT INTO counters (statTime, playerID, counterName, primaryParameter, parameterBlob) VALUES ('" + str(now) + "', '" + str(playerID) + "', '" + str(counterName) + "', '" + str(primaryParameter) + "', '" + str(data) + "')"
         self.db.execute(insertStatement)
+        self.db.commit()
         data = {"status":"ok"}
         resp.body = json.dumps(data)
 
@@ -48,6 +49,7 @@ class SessionStart:
         insertStatement = "INSERT INTO sessions (statTime, sessionStartTime, playerID) VALUES ('" + str(now) + "', '" + str(startTime) + "', '" + str(playerID) + "')"
         print(insertStatement)
         self.db.execute(insertStatement)
+        self.db.commit()
         data = {"status": "ok"}
         resp.body = json.dumps(data)
 
@@ -65,6 +67,7 @@ class PlayerRegisterEvent:
         insertStatement = "INSERT INTO players (installTime, playerID) VALUES ('" + str(now) + "', '" + str(playerID) + "')"
         print(insertStatement)
         self.db.execute(insertStatement)
+        self.db.commit()
         data = {"status":"ok"}
         resp.body = json.dumps(data)
 
@@ -80,12 +83,14 @@ class PlayerType:
 def sql_setup():
     sql = sqlite3.Connection(database='data/Datastore.sql')
     try:
-        playerSetup = "CREATE TABLE players (installTime timestamp, playerID varchar(50))"
-        sessionSetup = "CREATE TABLE sessions (statTime timestamp, sessionStartTime timestamp, playerID varchar(50))"
-        counterSetup = "CREATE TABLE counters (statTime timestamp, playerID varchar(50), counterName varchar(50), primaryParameter varchar(50), parameterBlob varchar(250))"
+        playerSetup = "CREATE TABLE IF NOT EXISTS players (installTime timestamp, playerID varchar(50))"
+        sessionSetup = "CREATE TABLE IF NOT EXISTS sessions (statTime timestamp, sessionStartTime timestamp, playerID varchar(50), sessionID varchar(50))"
+        counterSetup = "CREATE TABLE  IF NOT EXISTS counters (statTime timestamp, playerID varchar(50), counterName varchar(50), primaryParameter varchar(50), parameterBlob varchar(250))"
+        modelSetup = "CREATE TABLE IF NOT EXISTS models (trainingTime timestamp, modelName varchar(50), playerID varchar(50), label int)"
         sql.execute(playerSetup)
         sql.execute(sessionSetup)
         sql.execute(counterSetup)
+        sql.execute(modelSetup)
     except sqlite3.OperationalError as error:
         print(error)
         print("Tables are (probably) already created")
