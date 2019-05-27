@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using MiniJSON;
 
 public class AnalyticsManager : MonoBehaviour
 {
@@ -23,19 +24,6 @@ public class AnalyticsManager : MonoBehaviour
     public int port;
     public bool isCDNAvailable;
 
-    public static AnalyticsManager retrieveAM()
-    {
-        // singleton pattern
-        // this saves us having to have an ephemeral GameObject and
-        // searching the scene by name/tag when we want to reference the AM
-        if (AnalyticsManager.am == null)
-        {
-            AnalyticsManager.am = new AnalyticsManager();
-        }
-        return AnalyticsManager.am;
-    }
-
-
     void Start()
     {
         this.connectionString = "http://" + host + ":" + port.ToString();
@@ -44,31 +32,59 @@ public class AnalyticsManager : MonoBehaviour
 
     public static void logSessionStart()
     {
+        // when a new session is started, fire a new session event
         string req = am.connectionString + "/status";
         Dictionary<string, object> pairs = new Dictionary<string, object>();
         pairs.Add("Request", req);
-
-        am.StartCoroutine("_logEvent", pairs);
+        //am.StartCoroutine("_logEvent", pairs);
     }
 
-    //IEnumerator _logSessionStart(string request)
-    //{
+    public static void logCustomEvent(Dictionary<string, object> data)
+    {
+        // fire a generic event
+        string req = am.connectionString + "/status";
+        data.Add("Request", req);
+        //am.StartCoroutine("_logEvent", data);
+    }
 
-
-    //}
+    public static void logNewPlayer()
+    {
+        Debug.Log("Registering new player");
+        string req = am.connectionString + "/newPlayer";
+        Dictionary<string, object> data = new Dictionary<string, object>();
+        data.Add("Request", req);
+        am.StartCoroutine("_logEvent", data);
+    }
 
     IEnumerator _logEvent(Dictionary<string, object> keyValues)
     {
-        string request = (string)keyValues["Request"];
-        UnityWebRequest www = UnityWebRequest.Get(request);
-        yield return www.SendWebRequest();
-        if (www.isNetworkError || www.isHttpError)
+        if (isCDNAvailable)
         {
-            Debug.Log(www.error);
-            isCDNAvailable = false;
-            yield break;
+            string request = (string)keyValues["Request"];
+            string pid = "Unknown";
+            if (PlayerPrefs.HasKey("PlayerID"))
+            {
+                pid = PlayerPrefs.GetString("PlayerID");
+            }
+            keyValues.Add("PlayerID", pid);
+            string data = MiniJSON.Json.Serialize(keyValues);
+            UnityWebRequest www = UnityWebRequest.Put(request, data);
+            www.method = UnityWebRequest.kHttpVerbPOST;
+            www.SetRequestHeader("Content-Type", "application/json");
+            www.SetRequestHeader("Accept", "application/json");
+            yield return www.SendWebRequest();
+            if (www.isNetworkError || www.isHttpError)
+            {
+                Debug.Log(www.error);
+                isCDNAvailable = false;
+                yield break;
+            }
+            string result = www.downloadHandler.text;
+            Debug.Log(result);
         }
-        string result = www.downloadHandler.text;
-        Debug.Log(result);
+        else
+        {
+            Debug.LogError("Ingestion service disabled or not reachable");
+        }
     }
 }

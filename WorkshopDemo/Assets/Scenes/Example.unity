@@ -372,6 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ChangeConfig: 1
+  PlayerID: 
 --- !u!4 &1309192953
 Transform:
   m_ObjectHideFlags: 0

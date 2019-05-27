@@ -6,12 +6,13 @@ using UnityEngine.Networking;
 public class SceneManager : MonoBehaviour
 {
     public bool ChangeConfig;
+    public string PlayerID;
     GameObject sun;
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("stuff");
         manage_playerID();
+        this.PlayerID = PlayerPrefs.GetString("PlayerID");
         AnalyticsManager.logSessionStart();
         if (ChangeConfig)
         {
@@ -82,6 +83,8 @@ public class SceneManager : MonoBehaviour
             int rand = Random.Range(0, 1000);
             string hash = Hash128.Compute(SystemInfo.deviceUniqueIdentifier + rand.ToString()).ToString();
             PlayerPrefs.SetString("PlayerID", hash);
+            PlayerPrefs.Save();
+            AnalyticsManager.logNewPlayer();
         }
     }
 }

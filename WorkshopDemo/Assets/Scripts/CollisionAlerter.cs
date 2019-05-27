@@ -11,7 +11,7 @@ public class CollisionAlerter : MonoBehaviour
         {
             // the player did this
             // fire an event
-            AnalyticsManager.logCustomEvent();
+            //AnalyticsManager.logCustomEvent();
         }
     }
 }
