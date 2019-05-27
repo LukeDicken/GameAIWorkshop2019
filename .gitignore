@@ -41,3 +41,4 @@ sysinfo.txt
 
 *.pyc
 IngestionEngine/data/hello.sql
+Shared/data/Datastore.sql
