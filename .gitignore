@@ -37,8 +37,6 @@ sysinfo.txt
 *.unitypackage
 .DS_Store
 
-.idea/*
-
 *.pyc
 IngestionEngine/data/hello.sql
 Shared/data/Datastore.sql
