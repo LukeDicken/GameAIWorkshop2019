@@ -7,4 +7,3 @@ VOLUME data/
 COPY Launcher.py .
 
 CMD ["gunicorn", "--bind=0.0.0.0", "Launcher:api"]
-#CMD ["python","Launcher.py"]
