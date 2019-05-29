@@ -1,4 +1,5 @@
 FROM jupyter/scipy-notebook
 RUN rm -rf work
-VOLUME data/
+VOLUME shared/
+WORKDIR shared/
 CMD ["jupyter","lab"]
