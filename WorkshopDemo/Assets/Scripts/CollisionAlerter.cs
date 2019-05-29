@@ -10,7 +10,8 @@ public class CollisionAlerter : MonoBehaviour
         if(colName == "FPSController")
         {
             // the player did this
-            // fire an event
+            // build the custom event data
+            // fire a custom event
             Dictionary<string, string> parameters = new Dictionary<string, string>();
             parameters.Add("counterName", "Collision");
             parameters.Add("primaryParameter", this.name);
