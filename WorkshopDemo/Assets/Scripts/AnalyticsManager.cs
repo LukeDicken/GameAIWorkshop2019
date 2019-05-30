@@ -41,12 +41,6 @@ public class AnalyticsManager : MonoBehaviour
         // add a time stamp to the event
         // add the passed SessionID
         // start the coroutine
-        Dictionary<string, string> data = new Dictionary<string, string>();
-        string req = am.connectionString + "/sessionStart";
-        data.Add("Request", req);
-        DateTime localDate = DateTime.UtcNow; // note - UTC to standard
-        data.Add("startTime", localDate.ToString());
-        am.StartCoroutine("_logEvent", data);
     }
 
     public static void logNewPlayer()
@@ -56,10 +50,6 @@ public class AnalyticsManager : MonoBehaviour
         // create a dictionary or parameters
         // set up the correct endpoint
         // start the coroutine
-        Dictionary<string, string> data = new Dictionary<string, string>();
-        string req = am.connectionString + "/newPlayer";
-        data.Add("Request", req);
-        am.StartCoroutine("_logEvent", data);
     }
 
     public static void logCustomEvent(Dictionary<string, string> data)
@@ -69,31 +59,24 @@ public class AnalyticsManager : MonoBehaviour
         // get the dictionary as a passed parameter
         // add the correct endpoint
         // start the coroutine
-        string req = am.connectionString + "/counter";
-        data.Add("Request", req);
-        am.StartCoroutine("_logEvent", data);
     }
 
     public static void getConfig(SceneManager sm)
     {
-        am.StartCoroutine("_getConfig", sm);
+        // start the _getConfig coroutine
     }
 
     public IEnumerator _getConfig(SceneManager sm)
     {
         if (isCDNAvailable)
         {
-            string request = this.connectionString + "/playerType?PlayerID="+PlayerPrefs.GetString("PlayerID");
-            UnityWebRequest www = UnityWebRequest.Get(request);
-            yield return www.SendWebRequest();
-            if (www.isNetworkError || www.isHttpError)
-            {
-                Debug.Log(www.error);
-                isCDNAvailable = false;
-                yield break;
-            }
-            Dictionary<string, object> resp = (Dictionary<string, object>)MiniJSON.Json.Deserialize(www.downloadHandler.text);
-            sm.ParseConfig(resp);
+            yield return new WaitForEndOfFrame(); // Placeholder for compiler happiness
+            // build the GET request object
+            // REMEMBER - GETs pass parameters in their request string
+            // Createe a UnityWebRequest
+            // Send it and yield while it completes
+            // use MiniJSON to create a Dictionary object from the UnityWebRequest's downloadHandler field
+            // hand off to sm.ParseConfig
         }
     }
 
@@ -101,21 +84,15 @@ public class AnalyticsManager : MonoBehaviour
     {
         if (isCDNAvailable)
         {
-            string request = (string)keyValues["Request"];
-            keyValues.Remove("Request");
-            string pid = "Unknown";
-            if (PlayerPrefs.HasKey("PlayerID"))
-            {
-                pid = PlayerPrefs.GetString("PlayerID");
-            }
-            string sessionID = "-";
-            if (PlayerPrefs.HasKey("SessionID"))
-            {
-                sessionID = PlayerPrefs.GetString("SessionID");
-            }
-            keyValues.Add("PlayerID", pid);
-            keyValues.Add("SessionID", sessionID);
-            string data = MiniJSON.Json.Serialize(keyValues);
+            // retrieve the Request URL
+            // get the PlayerID from PlayerPrefs and add it to the Dictionoary
+            // retrieve the SessionID and add it to the dictionary
+            // use MiniJSON to serialize the dictionary into a JSON string
+            // Code provided will fire that as a UnityWebRequest
+
+
+            string request = ""; // placeholder - make sure this is the correct endpoint
+            string data = ""; // placeholder - use MiniJSON to populate this
             UnityWebRequest www = UnityWebRequest.Put(request, data);
             www.method = UnityWebRequest.kHttpVerbPOST;
             www.SetRequestHeader("Content-Type", "application/json");
