@@ -79,6 +79,11 @@ class PlayerType:
         self.db = db
 
     def on_get(self, req, resp):
+        # get the PlayerID from the req object
+        # create a SQL statement to count how many sessions that PlayerID has
+        # execute and retrieve the value
+        # is the number even or odd?
+        # return the result as a JSON payload on the configValue key
         playerID = req.get_param('PlayerID')
         getStatement = "SELECT COUNT(1) FROM sessions WHERE playerID = '" + str(playerID) + "'"
         cursor = self.db.execute("SELECT COUNT(*) FROM sessions")
