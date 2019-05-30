@@ -24,19 +24,14 @@ class CounterEvent:
     def __init__(self, db):
         self.db = db
 
-    # how do we represent a custom event?
+
     def on_post(self, req, resp):
-        playerID = req.media.pop('PlayerID')
-        now = dt.datetime.now()
-        counterName = req.media.pop('counterName')
-        primaryParameter = req.media.pop('primaryParameter')
-        sessionID = req.media.pop("SessionID")
-        data = json.dumps(req.media)
-        insertStatement = "INSERT INTO counters (statTime, playerID, counterName, primaryParameter, sessionID, parameterBlob) VALUES ('" + str(now) + "', '" + str(playerID) + "', '" + str(counterName) + "', '" + str(primaryParameter) + "', '" + str(sessionID) + "', '" + str(data) + "')"
-        self.db.execute(insertStatement)
-        self.db.commit()
-        data = {"status":"ok"}
-        resp.body = json.dumps(data)
+        # get the PlayerID, current time
+        # counterName primaryParameter and sessionID
+        # put the rest of the passed data into a dictionary
+        # insert into appropriate rows in counters table
+        # generate a JSON status=ok
+        pass
 
 class SessionStart:
 
@@ -44,19 +39,11 @@ class SessionStart:
         self.db = db
 
     def on_post(self, req, resp):
-        playerID = req.media['PlayerID']
-        now = dt.datetime.now()
-        startTime = req.media['startTime']
-        sessionID = req.media['SessionID']
-        insertStatement = "INSERT INTO sessions (statTime, sessionStartTime, playerID, sessionID) VALUES ('" + str(now) + "', '" + str(startTime) + "', '" + str(playerID) + "', '" + str(sessionID) + "')"
-        print(insertStatement)
-        self.db.execute(insertStatement)
-        self.db.commit()
-        data = {"status": "ok"}
-        resp.body = json.dumps(data)
-
-    # Determine the taxonomy for a session event
-    pass
+        # retrieve the PlayerID, startTime and SessionID from passed parameters
+        # annotate with the current time
+        # insert into sessions
+        # return a JSON status=ok blob
+        pass
 
 class PlayerRegisterEvent:
 
@@ -64,14 +51,12 @@ class PlayerRegisterEvent:
         self.db = db
 
     def on_post(self, req, resp):
-        playerID = req.media['PlayerID']
-        now = dt.datetime.now()
-        insertStatement = "INSERT INTO players (installTime, playerID) VALUES ('" + str(now) + "', '" + str(playerID) + "')"
-        print(insertStatement)
-        self.db.execute(insertStatement)
-        self.db.commit()
-        data = {"status":"ok"}
-        resp.body = json.dumps(data)
+        # retrieve the PlayerID
+        # get the current time
+        # insert the data into the players table
+        # return a json whose status is ok
+        # consider try/excepting to return status="fail" as appropriate
+        pass
 
 
 class PlayerType:
@@ -84,14 +69,7 @@ class PlayerType:
         # execute and retrieve the value
         # is the number even or odd?
         # return the result as a JSON payload on the configValue key
-        playerID = req.get_param('PlayerID')
-        getStatement = "SELECT COUNT(1) FROM sessions WHERE playerID = '" + str(playerID) + "'"
-        cursor = self.db.execute("SELECT COUNT(*) FROM sessions")
-        df = pd.DataFrame(cursor)
-        sessionCount = (int)((df.iloc[0][0]).astype(np.int32))
-        evenOdd = sessionCount % 2
-        data = {"status":"ok","configValue":evenOdd}
-        resp.body = json.dumps(data)
+        pass
 
 def sql_setup():
     sql = sqlite3.Connection(database='data/Datastore.sql')
@@ -102,7 +80,6 @@ def sql_setup():
         sql.execute(playerSetup)
         sql.execute(sessionSetup)
         sql.execute(counterSetup)
-        sql.execute(modelSetup)
     except sqlite3.OperationalError as error:
         print(error)
         print("Tables are (probably) already created")
