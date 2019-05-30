@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6c914561-47f3-435b-9b57-b7ee8d59097c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/IngestionEngine/Launcher.py" beforeDir="false" afterPath="$PROJECT_DIR$/IngestionEngine/Launcher.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -267,7 +267,7 @@
     <frame x="0" y="23" width="1680" height="1027" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24954791" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -277,7 +277,7 @@
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" sideWeight="0.4996986" weight="0.32894737" />
-      <window_info anchor="bottom" id="Docker" order="7" sideWeight="0.7817963" visible="true" weight="0.4375" />
+      <window_info active="true" anchor="bottom" id="Docker" order="7" sideWeight="0.7817963" visible="true" weight="0.4375" />
       <window_info anchor="bottom" id="Version Control" order="8" />
       <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.21820374" side_tool="true" visible="true" weight="0.4375" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.32956687" />
