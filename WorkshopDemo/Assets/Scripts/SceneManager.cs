@@ -19,20 +19,7 @@ public class SceneManager : MonoBehaviour
         if (ChangeConfig)
         {
             sun = GameObject.FindWithTag("Sun");
-            //int i = UnityEngine.Random.Range(1, 3);
-            //switch (i)
-            //{
-            //    // TODO - flip this out for a query
-            //    case 1:
-            //        sun_config1();
-            //        break;
-            //    case 2:
-            //        sun_config2();
-            //        break;
-            //    default:
-            //        Debug.LogError("Something went wrong");
-            //        break;
-            //}
+
             AnalyticsManager.getConfig(this);
         }
     }
@@ -45,37 +32,35 @@ public class SceneManager : MonoBehaviour
 
     public void ParseConfig(Dictionary<string, object> parameters)
     {
-        //Debug.Log("Start of sm callback");
-        if(parameters.ContainsKey("configValue"))
+        /*
+         * Currently this function randomly chooses one of the sun configs
+         * This morning we will make this driven by data received over the air
+         * from our "model" service
+         */
+        int i = UnityEngine.Random.Range(1, 3);
+        switch (i)
         {
-            int config =  (int)((long)parameters["configValue"]);
-            switch (config)
-            {
-                case 0:
-                    sun_config1();
-                    break;
-                case 1:
-                    sun_config2();
-                    break;
-                default:
-                    Debug.LogError("Response was not expected");
-                    break;
-            }
-            //Debug.Log("Completed config routine");
+            // TODO - flip this out for a query
+            case 1:
+                sun_config1();
+                break;
+            case 2:
+                sun_config2();
+                break;
+            default:
+                Debug.LogError("Something went wrong");
+                break;
         }
-        else
-        {
-            Debug.LogError("Did not receive a well formed response from config service");
-            sun_config2();
-        }
+
     }
 
     void sun_config1()
     {
         // sunset
+        // rotate the light
         Vector3 rotation = new Vector3(8, -180, 0);
         sun.transform.rotation = Quaternion.Euler(rotation);
-        //Debug.Log("Config 1");
+        // change the color of the light
         Light lig = sun.GetComponent<Light>();
         lig.color = new Color(0.8f, 0.5803922f, 0.01960784f);
     }
@@ -83,33 +68,21 @@ public class SceneManager : MonoBehaviour
     void sun_config2()
     {
         // daytime
+        // rotate the light
         Vector3 rotation = new Vector3(50, 0, 0);
         sun.transform.rotation = Quaternion.Euler(rotation);
-        //Debug.Log("Config 2");
-
     }
 
     void manage_playerID()
     {
+        // We can use the PlayerPrefs 
         if(PlayerPrefs.HasKey("PlayerID"))
         {
             // already set - we're good
         }
         else
         {
-            /*
-             * In an ideal world, Identity would be handled outside server-side
-             * Identity is genuinely one of the hardest things in Analytics,
-             * since there are so many freaking edge cases around:
-             *      Anonymous device usage
-             *      Social network linkage
-             *      Shared devices
-             * Also be aware that tracking an identity can causes issues with
-             * GDPR and similar systems.
-             * 
-             * For this exercise we are not tracking any identifiable info, so
-             * we're safe
-             */
+
             int rand = UnityEngine.Random.Range(0, 1000);
             string hash = Hash128.Compute(SystemInfo.deviceUniqueIdentifier + rand.ToString()).ToString();
             PlayerPrefs.SetString("PlayerID", hash);
