@@ -102,7 +102,6 @@ def sql_setup():
         sql.execute(playerSetup)
         sql.execute(sessionSetup)
         sql.execute(counterSetup)
-        sql.execute(modelSetup)
     except sqlite3.OperationalError as error:
         print(error)
         print("Tables are (probably) already created")
